@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id');
             $table->foreignId('post_id');
+            $table->text('reson');
             $table->boolean('resolved')->default(false);
             $table->timestamps();
         });

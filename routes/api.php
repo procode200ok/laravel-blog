@@ -1,12 +1,16 @@
 <?php
 
+use App\Models\PostCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\PostTagController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\PostCategoryController;
+use App\Http\Controllers\PostReportedController;
 use App\Http\Controllers\Auth\RegisterController;
-
+use App\Http\Controllers\PostInteractionsController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -36,8 +40,18 @@ Route::post('/register', [RegisterController::class, 'register']);
 Route::group(['middleware' => 'auth:user'], function () {
     Route::group(['prefix' => 'v1'], function () {
         Route::group(['prefix' => 'users'], function () {
-            Route::apiResource('post', PostController::class);
-            Route::apiResource('comment', CommentsController::class);
+            Route::apiResource('post',             PostController::class);
+            
+            Route::apiResource('comment',          CommentsController::class);
+
+            Route::apiResource('post-tags',        PostTagController::class);
+
+            Route::apiResource('post-categories',  PostCategoryController::class);
+
+            Route::apiResource('post-interactions',PostInteractionsController::class);
+            
+            Route::apiResource('report-post',      PostReportedController::class);
+
             Route::post('/logout', [LoginController::class, 'logout']);
         });
     });
