@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Posts;
 use Illuminate\Http\Request;
 use App\Models\ReportedPosts;
 use Illuminate\Validation\ValidationException;
@@ -37,6 +38,7 @@ class PostReportedController extends Controller
                 'reson'   => 'required',
                 'post_id' => 'required'
             ]);
+            $validatedData['post_id'] = Posts::where('post_id',$request->post_id)->first()->id;
 
             $report =  ReportedPosts::create($validatedData);
             return response()->json(['data' => $report], 201);

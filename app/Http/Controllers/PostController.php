@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Posts;
+use App\Models\Categories;
+use App\Models\PostCategory;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -16,7 +18,7 @@ class PostController extends Controller
         /**
          * retrive all post
          */
-        $posts = Posts::all();
+        $posts = Posts::all('post_id','title','content');
         return response()->json(['data' => $posts]);
     }
 
@@ -34,10 +36,48 @@ class PostController extends Controller
             $validatedData = $request->validate([
                 'title' => 'required',
                 'content' => 'required',
+                'category' => 'required'
             ]);
 
-            $post = Posts::create($validatedData);
-            return response()->json(['data' => $post], 201);
+            if(empty(Categories::where('name',$validatedData['category'])->first()))
+            {
+                $postData = [
+                    'title'  => $request->title,
+                    'content'=> $request->content
+                ];
+                $categoryData = [
+                    'name' => $request->category
+                ];
+
+                $post = Posts::create($postData);
+                $category = Categories::create($categoryData);
+               
+                $postCategoryData = [
+                    'post_id'     => $post->post_id,
+                    'category_id' => $category->id
+                ];
+
+                $postCategory = PostCategory::create($postCategoryData);
+
+                return response()->json(['data' => [$post,$category,$postCategory]], 201);
+            }else{
+
+                $postData = [
+                    'title'  => $request->title,
+                    'content'=> $request->content
+                ];
+
+                $post = Posts::create($postData);
+
+                $postCategoryData = [
+                    'post_id'     => $post->post_id,
+                    'category_id' => Categories::where('name',$validatedData['category'])->first()->id
+                ];
+
+                $postCategory = PostCategory::create($postCategoryData);
+
+                return response()->json(['data' => [$post,$postCategory]], 201);
+            }
 
         }catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);

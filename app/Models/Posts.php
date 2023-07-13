@@ -28,5 +28,6 @@ class Posts extends Model
     // }
     
     protected $primaryKey = 'post_id';
+    protected $keyType = 'string';
 
 }

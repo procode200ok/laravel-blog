@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tags;
+use App\Models\Posts;
 use App\Models\PostTag;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -17,8 +19,8 @@ class PostTagController extends Controller
          * Retrive all
          * post tags
          */
-        $postTags = PostTag::all();
-        return response()->json(['data' => $postTags]);
+        $tags = Tags::all();
+        return response()->json(['data' => $tags]);
     }
 
     /**
@@ -32,11 +34,39 @@ class PostTagController extends Controller
         try{
 
             $validatedData = $request->validate([
-                'name' => 'required'
+                'name'    => 'required',
+                'post_id' => 'required'
             ]);
+            $validatedData['post_id'] = Posts::where('post_id',$request->post_id)->first()->id;
 
-            $postTag =  PostTag::create($validatedData);
-            return response()->json(['data' => $postTag], 201);
+            if(empty(Tags::where('name',$validatedData['name'])->first()))
+            {
+                $tagData = [
+                    'name' => $request->name
+                ];
+                
+                $tag =  Tags::create($tagData);
+
+                $postTagData = [
+                    'post_id' => $request->post_id,
+                    'tag_id'  => $tag->id
+                ];
+               
+                $postTag = PostTag::create($postTagData);
+
+                return response()->json(['data' => [$tag,$postTag]], 201);
+            }else{
+                $tagId =  Tags::where('name',$validatedData['name'])->first()->id;
+                
+                $postTagData = [
+                    'post_id' => $request->post_id,
+                    'tag_id'  => $tagId
+                ];
+
+                $postTag = PostTag::create($postTagData);
+                
+                return response()->json(['data' => $postTag], 201);
+            }
 
         }catch (ValidationException $e){
             return response()->json(['error' => $e->errors()], 442);
@@ -51,8 +81,8 @@ class PostTagController extends Controller
         /**
          * show a single post tag
          */
-        $postTag = PostTag::findOrFail($id);
-        return response()->json(['data' => $postTag]);
+        $tag = Tags::findOrFail($id);
+        return response()->json(['data' => $tag]);
     }
 
     /**
@@ -70,9 +100,9 @@ class PostTagController extends Controller
                 'name' => 'required',
             ]);
 
-            $postTag = PostTag::findOrFail($id);
-            $postTag->update($validatedData);
-            return response()->json(['data' => $postTag]);
+            $tag = Tags::findOrFail($id);
+            $tag->update($validatedData);
+            return response()->json(['data' => $tag]);
 
         }catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
@@ -88,8 +118,8 @@ class PostTagController extends Controller
         * delete any 
         * post tag
         */
-       $postTag = PostTag::findOrFail($id);
-       $postTag->delete();
+       $tag = Tags::findOrFail($id);
+       $tag->delete();
        return response()->json(['message' => 'Post Tag deleted successfully']);
     }
 }
