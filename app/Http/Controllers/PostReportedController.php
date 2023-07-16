@@ -89,9 +89,9 @@ class PostReportedController extends Controller
     public function destroy(string $id)
     {
         /**
-        * delete any 
-        * post tag
-        */
+         * delete any 
+         * post tag
+         */
        $report = ReportedPosts::findOrFail($id);
        $report->delete();
        return response()->json(['message' => 'report deleted successfully']);

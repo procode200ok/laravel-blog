@@ -48,7 +48,7 @@ class PostTagController extends Controller
                 $tag =  Tags::create($tagData);
 
                 $postTagData = [
-                    'post_id' => $request->post_id,
+                    'post_id' => Posts::where('post_id',$request->post_id)->first()->id,
                     'tag_id'  => $tag->id
                 ];
                
@@ -59,7 +59,7 @@ class PostTagController extends Controller
                 $tagId =  Tags::where('name',$validatedData['name'])->first()->id;
                 
                 $postTagData = [
-                    'post_id' => $request->post_id,
+                    'post_id' => Posts::where('post_id',$request->post_id)->first()->id,
                     'tag_id'  => $tagId
                 ];
 
