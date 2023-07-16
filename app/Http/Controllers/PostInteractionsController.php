@@ -28,15 +28,14 @@ class PostInteractionsController extends Controller
          */
         try{
 
-            $validatedData = $request->validate([
+            $request->validate([
                 'reaction'    => 'required|boolean',
                 'post_id' => 'required'
             ]);
 
             $interactionData = [
-                'type'   => $request->$request->reaction,
+                'type'   => $request->reaction,
                 'post_id'=> Posts::where('post_id',$request->post_id)->first()->id
-
             ];
 
             $interaction = Interactions::create($interactionData);
