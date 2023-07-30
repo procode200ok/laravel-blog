@@ -11,6 +11,9 @@ use App\Http\Controllers\PostCategoryController;
 use App\Http\Controllers\PostReportedController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\PostInteractionsController;
+use App\Http\Controllers\UploadBlogContentController;
+
+use App\Http\Controllers\Ai\OpenApi;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -51,6 +54,12 @@ Route::group(['middleware' => 'auth:user'], function () {
             Route::apiResource('post-interactions',PostInteractionsController::class);
             
             Route::apiResource('report-post',      PostReportedController::class);
+
+            Route::apiResource('upload-bolb',      UploadBlogContentController::class);
+
+            Route::post('/test-open-ai-api', [OpenApi::class, 'getOpenAiData']);
+
+            Route::get('/test-disk', [UploadBlogContentController::class, 'testDisk']);
 
             Route::post('/logout', [LoginController::class, 'logout']);
         });
