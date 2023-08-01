@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Posts;
 use App\Models\Interactions;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
+use App\Exceptions\ApiExceptions;
 
 class PostInteractionsController extends Controller
 {
@@ -41,8 +41,8 @@ class PostInteractionsController extends Controller
             $interaction = Interactions::create($interactionData);
             return response()->json(['data' => $interaction], 201);
             
-        }catch (ValidationException $e){
-            return response()->json(['error' => $e->errors()], 442);
+        }catch (ApiExceptions $e){
+            return $e->render();
         }
     }
 
@@ -78,8 +78,8 @@ class PostInteractionsController extends Controller
             $interaction->update($validatedData);
             return response()->json(['data' => $interaction]);
 
-        }catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        }catch (ApiExceptions $e) {
+            return $e->render();
         }
     }
 

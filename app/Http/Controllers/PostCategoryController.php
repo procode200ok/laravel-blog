@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Categories;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
+use App\Exceptions\ApiExceptions;
 
 class PostCategoryController extends Controller
 {
@@ -38,8 +38,8 @@ class PostCategoryController extends Controller
             $categories =  Categories::create($validatedData);
             return response()->json(['data' => $categories], 201);
 
-        }catch (ValidationException $e){
-            return response()->json(['error' => $e->errors()], 442);
+        }catch (ApiExceptions $e){
+            return $e->render();
         }
     }
 
@@ -74,8 +74,8 @@ class PostCategoryController extends Controller
             $categories->update($validatedData);
             return response()->json(['data' => $categories]);
 
-        }catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        }catch (ApiExceptions $e) {
+            return $e->render();
         }
     }
 

@@ -6,7 +6,7 @@ use App\Models\Tags;
 use App\Models\Posts;
 use App\Models\PostTag;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
+use App\Exceptions\ApiExceptions;
 
 class PostTagController extends Controller
 {
@@ -68,8 +68,8 @@ class PostTagController extends Controller
                 return response()->json(['data' => $postTag], 201);
             }
 
-        }catch (ValidationException $e){
-            return response()->json(['error' => $e->errors()], 442);
+        }catch (ApiExceptions $e){
+            return $e->render();
         }
     }
 
@@ -104,8 +104,8 @@ class PostTagController extends Controller
             $tag->update($validatedData);
             return response()->json(['data' => $tag]);
 
-        }catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        }catch (ApiExceptions $e) {
+            return $e->render();
         }
     }
 
