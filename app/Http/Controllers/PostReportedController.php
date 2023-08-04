@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Posts;
 use Illuminate\Http\Request;
 use App\Models\ReportedPosts;
-use App\Exceptions\ApiExceptions;
+use Exception;
 
 class PostReportedController extends Controller
 {
@@ -42,8 +42,8 @@ class PostReportedController extends Controller
 
             $report =  ReportedPosts::create($validatedData);
             return response()->json(['data' => $report], 201);
-        }catch (ApiExceptions $e){
-            return $e->render();
+        }catch (Exception $e){
+           return response()->json(['error' => [$e->getMessage()]], $e->status);
         }
     }
 
@@ -78,8 +78,8 @@ class PostReportedController extends Controller
             $report->update($validatedData);
             return response()->json(['data' => $report]);
 
-        }catch (ApiExceptions $e) {
-            return $e->render();
+        }catch (Exception $e) {
+            return response()->json(['error' => [$e->getMessage()]], $e->status);
         }
     }
 

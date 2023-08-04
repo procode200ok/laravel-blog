@@ -6,7 +6,7 @@ use App\Models\Posts;
 use App\Models\Blobs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Exceptions\ApiExceptionHandler;
+use Exception;
 
 class UploadBlogContentController extends Controller
 {
@@ -53,7 +53,7 @@ class UploadBlogContentController extends Controller
             
             return  response()->json(['data' => $blobData, 'url' => $url], 201);
 
-        }catch(\ApiExceptionHandler $e){
+        }catch(Exception $e){
             return response()->json(['error' => $e], 500);
         }
     }

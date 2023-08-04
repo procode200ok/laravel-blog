@@ -7,6 +7,7 @@ use App\Models\Categories;
 use App\Models\PostCategory;
 use Illuminate\Http\Request;
 use App\Exceptions\ApiExceptions;
+use Exception;
 
 class PostController extends Controller
 {
@@ -79,8 +80,8 @@ class PostController extends Controller
                 return response()->json(['data' => [$post,$postCategory]], 201);
             }
 
-        }catch (ApiExceptions $e) {
-            return $e->render();
+        }catch (Exception $e) {
+            return response()->json(['error' => [$e->getMessage()]], $e->status);
         }
     }
 
@@ -117,8 +118,8 @@ class PostController extends Controller
             $post->update($validatedData);
             return response()->json(['data' => $post]);
 
-        }catch (ApiExceptions $e) {
-            return $e->render();
+        }catch (Exception $e) {
+            return response()->json(['error' => [$e->getMessage()]], $e->status);
         }
     }
 

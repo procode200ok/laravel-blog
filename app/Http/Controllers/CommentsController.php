@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Posts;
 use App\Models\Comments;
 use Illuminate\Http\Request;
-use App\Exceptions\ApiExceptions;
+use Exception;
 
 class CommentsController extends Controller
 {
@@ -43,8 +43,8 @@ class CommentsController extends Controller
             $comment = Comments::create($validatedData);
             return response()->json(['data' => $comment], 201);
 
-        }catch (ApiExceptions $e) {
-            return $e->render();
+        }catch (Exception $e) {
+            return response()->json(['error' => [$e->getMessage()]], $e->status);
         }
     }
 
@@ -82,8 +82,8 @@ class CommentsController extends Controller
             $comment->update($validatedData);
             return response()->json(['data' => $comment]);
 
-        }catch (ApiExceptions $e) {
-            return $e->render();
+        }catch (Exception $e) {
+            return response()->json(['error' => [$e->getMessage()]], $e->status);
         }
     }
 

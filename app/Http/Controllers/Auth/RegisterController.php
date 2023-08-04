@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
+use Exception;
 
 
 class RegisterController extends Controller
@@ -36,8 +36,8 @@ class RegisterController extends Controller
             $token = $user->createToken('auth_token')->plainTextToken;
 
             return response()->json(['token' => $token], 201);
-        }catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        }catch (Exception $e) {
+            return response()->json(['error' => [$e->getMessage()]], $e->status);
         }
     }
 }
